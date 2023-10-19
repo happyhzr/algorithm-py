@@ -27,5 +27,54 @@ def make_change_2(
     return min_coins
 
 
+def make_change_3(coin_value_list: List[int], change: int, min_coins: List[int]) -> int:
+    for cents in range(change + 1):
+        coin_count = cents
+        for j in [c for c in coin_value_list if c <= cents]:
+            if min_coins[cents - j] + 1 < coin_count:
+                coin_count = min_coins[cents - j] + 1
+        min_coins[cents] = coin_count
+    return min_coins[change]
+
+
+def make_change_4(
+    coin_value_list: List[int], change: int, min_coins: List[int], coins_used: List[int]
+) -> int:
+    for cents in range(change + 1):
+        coin_count = cents
+        new_coin = 1
+        for j in [c for c in coin_value_list if c <= cents]:
+            if min_coins[cents - j] + 1 < coin_count:
+                coin_count = min_coins[cents - j] + 1
+                new_coin = j
+        min_coins[cents] = coin_count
+        coins_used[cents] = new_coin
+    return min_coins[change]
+
+
+def print_coins(coins_used: List[int], change: int) -> None:
+    coin = change
+    while coin > 0:
+        this_coin = coins_used[coin]
+        print(this_coin, end=" ")
+        coin = coin - this_coin
+    print()
+
+
+def main() -> None:
+    amnt = 63
+    clist = [1, 5, 10, 21, 25]
+    coins_used = [0] * (amnt + 1)
+    coin_count = [0] * (amnt + 1)
+
+    print(f"Making change for {amnt}")
+    print(
+        f"Requires the following {make_change_4(clist,amnt,coin_count,coins_used)} coins"
+    )
+    print_coins(coins_used, amnt)
+    print("The used list is as follows:")
+    print(coins_used)
+
+
 if __name__ == "__main__":
-    print(make_change_2([1, 5, 10, 25], 62, [0] * 64))
+    main()
